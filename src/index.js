@@ -2,7 +2,7 @@ import express from "express"
 import "dotenv/config"
 // import routes
 import userRoutes from "./routes/users.routes.js"
-// import activityRoutes from "./routes/activities.routes.js"
+import activityRoutes from "./routes/activities.routes.js"
 
 const app = express()
 
