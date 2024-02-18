@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String     @id @default(uuid())
+  email      String     @unique
+  name       String
+  lastName   String
+  routines   Routine[]
+  activities Activity[]
+  createdAt  DateTime   @default(now())
+  role       String?
+  roleModel  Role?       @relation(fields: [role], references: [name])
+}
+
+model Routine {
+  id         String            @id @default(uuid())
+  name       String
+  active     Boolean           @default(false)
+  createdAt  DateTime          @default(now())
+  userId     String
+  // activities RoutineActivity[]
+  activities Activity[]
+  user       User              @relation(fields: [userId], references: [id])
+}
+
+model Activity {
+  id             String            @id @default(uuid())
+  name           String
+  content        String
+  active         Boolean           @default(false)
+  createdAt      DateTime          @default(now())
+  userId         String
+  // routines       RoutineActivity[]
+  routines Routine[]
+  user           User              @relation(fields: [userId], references: [id])
+  status         String?
+  statusModel    Status?            @relation(fields: [status], references: [name])
+  frequency      String?
+  frequencyModel Frecuency?         @relation(fields: [frequency], references: [name])
+}
+
+// Many to Many -> Routine - Activity
+// model RoutineActivity {
+//   id         String    @id @default(uuid())
+//   activity   Activity? @relation(fields: [activityId], references: [id])
+//   routine    Routine?  @relation(fields: [routineId], references: [id])
+//   activityId String?
+//   routineId  String?
+
+//   // TODO: Figure if I can add an addedAt date element
+//   @@index([activityId, routineId])
+// }
+
+model Frecuency {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  Activity  Activity[]
+}
+
+model Status {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  activity  Activity[]
+}
+
+model Role {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  routes    RoleRoute[]
+  createdAt DateTime    @default(now())
+  User      User[]
+}
+
+model Route {
+  id        String      @id @default(uuid())
+  name      String
+  url       String
+  roles     RoleRoute[]
+  createdAt DateTime    @default(now())
+
+  @@index([name, url])
+}
+
+model RoleRoute {
+  id      String  @id @default(uuid())
+  role    Role?   @relation(fields: [roleId], references: [id])
+  route   Route?  @relation(fields: [routeId], references: [id])
+  roleId  Int?
+  routeId String?
+
+  // TODO: Figure if I can add an addedAt date element
+  @@index([roleId, routeId])
+}

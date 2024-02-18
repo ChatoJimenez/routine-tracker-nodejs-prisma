@@ -1,0 +1,25 @@
+{
+    "name": "routine-tracker-nodejs-prisma",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "nodemon src/index.js",
+        "visualize": "npx prisma studio",
+        "migrate": "npx prisma migrate dev --name"
+    },
+    "keywords": [],
+    "author": "jesgui",
+    "license": "ISC",
+    "devDependencies": {
+        "nodemon": "^3.0.3",
+        "prisma": "^5.9.1"
+    },
+    "dependencies": {
+        "@prisma/client": "^5.9.1",
+        "dotenv": "^16.4.4",
+        "express": "^4.18.2"
+    }
+}
