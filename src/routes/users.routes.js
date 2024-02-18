@@ -1,37 +1,25 @@
 import { Router } from "express"
-import { prisma } from "../config/connection.js"
+import {
+    createUser,
+    deleteUserById,
+    getUserById,
+    getUsers,
+    updateUserById,
+    updateUserRole,
+} from "../controllers/userController.js"
 
 const router = Router()
 
-// Get all users
-router.get("/", async (req, res) => {
-    const users = await prisma.user.findMany({
-        include: {
-            routines: true,
-            activities: true,
-        },
-    })
-    res.json(users)
-})
+router.get("/", getUsers)
 
-router.post("/", async (req, res) => {
-    let user
-    try {
-        user = await prisma.user.create({
-            data: req.body,
-        })
-    } catch (error) {
-        console.log(error.code)
-        if (error.code === "P2002")
-            return res
-                .status(400)
-                .json({ message: "Email already used", error: "Invalid data" })
-        return res.status(500).json({
-            message: error.message,
-            error: "Unexpected error occurred",
-        })
-    }
-    return res.status(201).json(user)
-})
+router.get("/:id", getUserById)
+
+router.post("/", createUser)
+
+router.put("/:id/edit", updateUserById)
+
+router.put("/:id/role/:action", updateUserRole)
+
+router.delete("/:id", deleteUserById)
 
 export default router
